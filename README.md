@@ -15,15 +15,21 @@ Dashboard de pagamentos estilo Stripe, feito em Angular. Tabela paginável e ord
 ```bash
 npm install
 
-npm start        # ng serve — http://localhost:4200
+npm run dev      # ng serve — http://localhost:4200 (desenvolvimento, com reload)
 
-npm run build    # build de produção em dist/
+npm run build    # build de produção em dist/chargeblast-fe-interview/browser
+
+npm start        # serve o build de produção na porta $PORT (usado pelo deploy no Heroku)
 
 npm test         # testes unitários (Vitest)
 
 npx playwright install chromium   # uma vez, para baixar o navegador dos testes E2E
 npm run e2e      # testes end-to-end (Playwright), sobe o app e roda em Chromium headless
 ```
+
+### Deploy
+
+Publicado no Heroku via buildpack Node, sem Procfile — o hook `heroku-postbuild` roda `ng build` logo após o `npm install`, e o script `start` serve os arquivos estáticos de `dist/chargeblast-fe-interview/browser` com o pacote `serve` na porta `$PORT`, com fallback de SPA (`serve.json`) para as rotas do Angular Router.
 
 ### Estrutura
 
@@ -66,15 +72,21 @@ src/app/
 ```bash
 npm install
 
-npm start        # ng serve — http://localhost:4200
+npm run dev      # ng serve — http://localhost:4200 (development, with reload)
 
-npm run build    # production build into dist/
+npm run build    # production build into dist/chargeblast-fe-interview/browser
+
+npm start        # serves the production build on $PORT (used by the Heroku deploy)
 
 npm test         # unit tests (Vitest)
 
 npx playwright install chromium   # once, to download the E2E test browser
 npm run e2e      # end-to-end tests (Playwright), boots the app and runs headless Chromium
 ```
+
+### Deploy
+
+Deployed on Heroku via the Node buildpack, no Procfile — the `heroku-postbuild` hook runs `ng build` right after `npm install`, and the `start` script serves the static files in `dist/chargeblast-fe-interview/browser` with the `serve` package on `$PORT`, with SPA fallback (`serve.json`) for Angular Router routes.
 
 ### Structure
 

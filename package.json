@@ -3,14 +3,19 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "serve -s dist/chargeblast-fe-interview/browser -l $PORT -c $PWD/serve.json",
+    "dev": "ng serve",
     "build": "ng build",
+    "heroku-postbuild": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "e2e": "playwright test"
   },
   "private": true,
   "packageManager": "npm@12.0.1",
+  "engines": {
+    "node": "24.x"
+  },
   "dependencies": {
     "@angular/common": "^22.0.0",
     "@angular/compiler": "^22.0.0",
@@ -19,6 +24,7 @@
     "@angular/platform-browser": "^22.0.0",
     "@angular/router": "^22.0.0",
     "rxjs": "~7.8.0",
+    "serve": "^14.2.6",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
