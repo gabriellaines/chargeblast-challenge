@@ -1,0 +1,21 @@
+<div class="status-tabs">
+  <button
+    type="button"
+    class="status-tabs__tab"
+    [class.status-tabs__tab--active]="statuses().length === 0"
+    (click)="selectAll()"
+  >
+    All
+  </button>
+
+  @for (tab of tabs; track tab.value) {
+    <button
+      type="button"
+      class="status-tabs__tab"
+      [class.status-tabs__tab--active]="isActive(tab.value)"
+      (click)="toggle(tab.value)"
+    >
+      {{ tab.label }}
+    </button>
+  }
+</div>

@@ -1,0 +1,106 @@
+<div class="payments-filters">
+  <input
+    type="search"
+    class="payments-filters__search"
+    placeholder="Search"
+    [value]="filters().search"
+    (input)="onSearchInput($event)"
+  />
+
+  <app-payment-status-tabs [statuses]="filters().statuses" (statusesChange)="onStatusesChange($event)" />
+
+  <div class="payments-filters__row">
+    <div class="payments-filters__chips">
+      <app-filter-chip label="Date and time" [hasMenu]="true">
+        <div class="payments-filters__menu-group">
+          <button
+            type="button"
+            class="payments-filters__preset-button"
+            [class.payments-filters__preset-button--active]="activePreset() === null"
+            (click)="onClearDateRange()"
+          >
+            All time
+          </button>
+          @for (preset of datePresets; track preset.value) {
+            <button
+              type="button"
+              class="payments-filters__preset-button"
+              [class.payments-filters__preset-button--active]="activePreset() === preset.value"
+              (click)="onPresetSelect(preset.value)"
+            >
+              {{ preset.label }}
+            </button>
+          }
+          @if (activePreset() === 'custom') {
+            <div class="payments-filters__custom-dates">
+              <input type="date" [value]="customStart()" (change)="onCustomDateChange('start', $event)" />
+              <span>–</span>
+              <input type="date" [value]="customEnd()" (change)="onCustomDateChange('end', $event)" />
+            </div>
+          }
+        </div>
+      </app-filter-chip>
+
+      <app-filter-chip label="Amount" [hasMenu]="true">
+        <div class="payments-filters__menu-group payments-filters__menu-group--amount">
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="Min"
+            class="payments-filters__amount-input"
+            [value]="minAmountInput()"
+            (input)="onAmountChange('min', $event)"
+          />
+          <span>–</span>
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="Max"
+            class="payments-filters__amount-input"
+            [value]="maxAmountInput()"
+            (input)="onAmountChange('max', $event)"
+          />
+        </div>
+      </app-filter-chip>
+
+      <app-filter-chip label="Currency" />
+
+      <app-filter-chip label="Status" [hasMenu]="true">
+        <fieldset class="payments-filters__menu-group">
+          @for (status of statusOptions; track status) {
+            <label class="payments-filters__checkbox">
+              <input type="checkbox" [checked]="filters().statuses.includes(status)" (change)="onToggleStatus(status)" />
+              {{ statusLabels[status] }}
+            </label>
+          }
+        </fieldset>
+      </app-filter-chip>
+
+      <app-filter-chip label="Payment method" [hasMenu]="true">
+        <fieldset class="payments-filters__menu-group">
+          @for (brand of brandOptions; track brand) {
+            <label class="payments-filters__checkbox">
+              <input type="checkbox" [checked]="filters().paymentMethods.includes(brand)" (change)="onToggleBrand(brand)" />
+              {{ brandLabels[brand] }}
+            </label>
+          }
+        </fieldset>
+      </app-filter-chip>
+
+      <app-filter-chip label="More filters" />
+    </div>
+
+    <div class="payments-filters__actions">
+      <button type="button" class="payments-filters__action-button" (click)="exportRequested.emit()">
+        <span class="payments-filters__action-icon">↑</span>
+        Export
+      </button>
+      <button type="button" class="payments-filters__action-button" (click)="editColumnsRequested.emit()">
+        <span class="payments-filters__action-icon">▤</span>
+        Edit columns
+      </button>
+    </div>
+  </div>
+</div>

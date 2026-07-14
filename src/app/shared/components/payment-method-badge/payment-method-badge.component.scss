@@ -1,0 +1,39 @@
+.payment-method {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--color-text);
+}
+
+.payment-method__icon {
+  display: inline-flex;
+  align-items: center;
+
+  svg {
+    height: 1.125rem;
+    width: auto;
+  }
+}
+
+.payment-method__icon--visa {
+  color: #1a1f71;
+}
+
+.payment-method__icon--mastercard {
+  color: #eb001b;
+}
+
+.payment-method__icon--amex {
+  color: #2e77bc;
+}
+
+.payment-method__icon--discover {
+  color: #ff6000;
+}
+
+.payment-method__digits {
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+}

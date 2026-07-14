@@ -1,0 +1,12 @@
+<div class="filter-chip">
+  <button type="button" class="filter-chip__button" (click)="toggle()">
+    <span class="filter-chip__icon">+</span>
+    {{ label() }}
+  </button>
+
+  @if (hasMenu() && open()) {
+    <div class="filter-chip__menu">
+      <ng-content></ng-content>
+    </div>
+  }
+</div>

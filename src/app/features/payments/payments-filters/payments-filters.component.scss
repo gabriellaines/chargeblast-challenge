@@ -1,0 +1,116 @@
+.payments-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.payments-filters__search {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+}
+
+.payments-filters__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.payments-filters__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.payments-filters__menu-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.payments-filters__checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.payments-filters__preset-button {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.5rem;
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  text-align: left;
+  color: var(--color-text-secondary);
+
+  &:hover {
+    background: var(--color-bg-canvas);
+    color: var(--color-text);
+  }
+}
+
+.payments-filters__preset-button--active {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.payments-filters__custom-dates {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: 0.375rem;
+
+  input {
+    width: 0;
+    flex: 1 1 auto;
+    padding: 0.3125rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+}
+
+.payments-filters__menu-group--amount {
+  flex-direction: row;
+  align-items: center;
+}
+
+.payments-filters__amount-input {
+  width: 5.5rem;
+  padding: 0.3125rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.payments-filters__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.payments-filters__action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text);
+  background: var(--color-bg-surface);
+
+  &:hover {
+    background: var(--color-bg-canvas);
+  }
+}
+
+.payments-filters__action-icon {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}

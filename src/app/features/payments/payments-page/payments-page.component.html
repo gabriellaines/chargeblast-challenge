@@ -1,0 +1,22 @@
+<section class="payments-page">
+  <app-payments-toolbar [totalItems]="facade.totalItems()" />
+
+  <app-payments-filters [filters]="facade.filters()" (filtersChange)="facade.updateFilters($event)" />
+
+  @if (facade.error(); as error) {
+    <p class="payments-page__error">{{ error }}</p>
+  }
+
+  <app-payments-table
+    [payments]="facade.payments()"
+    [sort]="facade.sort()"
+    [loading]="facade.loading()"
+    [currentPage]="facade.currentPage()"
+    [totalPages]="facade.totalPages()"
+    [totalItems]="facade.totalItems()"
+    [pageSize]="facade.pageSize()"
+    (sortChange)="facade.updateSort($event)"
+    (pageChange)="facade.goToPage($event)"
+    (pageSizeChange)="facade.changePageSize($event)"
+  />
+</section>

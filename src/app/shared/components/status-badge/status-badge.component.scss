@@ -1,0 +1,52 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.125rem 0.625rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.badge__icon {
+  font-size: 0.6875rem;
+}
+
+.badge--success {
+  background: var(--color-success-bg);
+  border-color: var(--color-success-border);
+  color: var(--color-success-text);
+}
+
+.badge--pending {
+  background: var(--color-pending-bg);
+  border-color: var(--color-pending-border);
+  color: var(--color-pending-text);
+}
+
+.badge--failed {
+  background: var(--color-failed-bg);
+  border-color: var(--color-failed-border);
+  color: var(--color-failed-text);
+}
+
+.badge--refunded {
+  background: var(--color-refunded-bg);
+  border-color: var(--color-refunded-border);
+  color: var(--color-refunded-text);
+}
+
+.badge--disputed {
+  background: var(--color-disputed-bg);
+  border-color: var(--color-disputed-border);
+  color: var(--color-disputed-text);
+}
+
+.badge--uncaptured {
+  background: var(--color-uncaptured-bg);
+  border-color: var(--color-uncaptured-border);
+  color: var(--color-uncaptured-text);
+}

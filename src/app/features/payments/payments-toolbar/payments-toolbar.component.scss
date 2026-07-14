@@ -1,0 +1,23 @@
+.payments-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.payments-toolbar__heading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.625rem;
+}
+
+.payments-toolbar__title {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.payments-toolbar__count {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}

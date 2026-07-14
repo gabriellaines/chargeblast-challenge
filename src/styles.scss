@@ -1,1 +1,108 @@
-/* You can add global styles to this file, and also import other style files */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+figure {
+  margin: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  background: var(--color-bg-canvas);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+ul,
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+:root {
+  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-size-base: 14px;
+
+  --color-bg-canvas: #f6f8fa;
+  --color-bg-surface: #ffffff;
+  --color-text: #1a1f36;
+  --color-text-secondary: #697386;
+  --color-border: #e3e8ee;
+
+  --color-primary: #635bff;
+  --color-primary-hover: #524ae0;
+
+  --color-success-bg: #e3f9e5;
+  --color-success-text: #1a7f37;
+  --color-success-border: #15682d;
+
+  --color-pending-bg: #eef0f3;
+  --color-pending-text: #5f6b7a;
+  --color-pending-border: #4e5864;
+
+  --color-failed-bg: #fde8e8;
+  --color-failed-text: #c0292c;
+  --color-failed-border: #9d2224;
+
+  --color-refunded-bg: #e6ecf7;
+  --color-refunded-text: #3c5a99;
+  --color-refunded-border: #314a7d;
+
+  --color-disputed-bg: #fdf1e0;
+  --color-disputed-text: #9a5b13;
+  --color-disputed-border: #7c480d;
+
+  --color-uncaptured-bg: #eef2f7;
+  --color-uncaptured-text: #4b5768;
+  --color-uncaptured-border: #37414f;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(26, 31, 54, 0.06);
+  --shadow-md: 0 2px 8px rgba(26, 31, 54, 0.08);
+}

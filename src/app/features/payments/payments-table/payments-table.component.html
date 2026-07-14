@@ -1,0 +1,103 @@
+<div class="payments-table">
+  <table class="payments-table__table">
+    <thead>
+      <tr>
+        <th class="payments-table__header payments-table__header--checkbox">
+          <input type="checkbox" [checked]="allSelected()" (change)="toggleAll()" aria-label="Select all rows" />
+        </th>
+        @for (column of columns; track column.key) {
+          <th
+            class="payments-table__header"
+            [class.payments-table__header--sortable]="column.sortable"
+            [class.payments-table__header--right]="column.align === 'right'"
+            (click)="onSort(column)"
+          >
+            {{ column.label }}
+            @if (sortIndicator(column); as direction) {
+              <span class="payments-table__sort-icon">{{ direction === 'asc' ? '↑' : '↓' }}</span>
+            }
+          </th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @if (loading()) {
+        <tr class="payments-table__state-row">
+          <td [attr.colspan]="columns.length + 1">Loading payments…</td>
+        </tr>
+      } @else if (payments().length === 0) {
+        <tr class="payments-table__state-row">
+          <td [attr.colspan]="columns.length + 1">No payments match the current filters.</td>
+        </tr>
+      } @else {
+        @for (payment of payments(); track payment.id) {
+          <tr
+            class="payments-table__row"
+            data-testid="payment-row"
+            [attr.data-id]="payment.id"
+            [attr.data-status]="payment.status"
+            [attr.data-brand]="payment.paymentMethod.brand"
+            [attr.data-last4]="payment.paymentMethod.last4"
+            [attr.data-email]="payment.customerEmail"
+            [attr.data-amount]="payment.amount"
+            [attr.data-currency]="payment.currency"
+            [attr.data-created-at]="payment.createdAt.toISOString()"
+          >
+            <td class="payments-table__cell payments-table__cell--checkbox">
+              <input
+                type="checkbox"
+                [checked]="isSelected(payment.id)"
+                (change)="toggleRow(payment.id)"
+                [attr.aria-label]="'Select payment ' + payment.id"
+              />
+            </td>
+            <td class="payments-table__cell">
+              <button type="button" class="payments-table__id-button" [title]="payment.id" (click)="copyId(payment.id)">
+                <code class="payments-table__id-code">{{ truncateId(payment.id) }}</code>
+                <span class="payments-table__copy-hint">{{ copiedId() === payment.id ? 'Copied!' : 'Copy' }}</span>
+              </button>
+            </td>
+            <td class="payments-table__cell">
+              {{ payment.amount | paymentAmount: payment.currency }}
+              <span class="payments-table__amount-currency">{{ payment.currency }}</span>
+            </td>
+            <td class="payments-table__cell">
+              <app-status-badge [status]="payment.status" />
+            </td>
+            <td class="payments-table__cell">
+              <app-payment-method-badge [brand]="payment.paymentMethod.brand" [last4]="payment.paymentMethod.last4" />
+            </td>
+            <td class="payments-table__cell">
+              {{ payment.description }}
+            </td>
+            <td class="payments-table__cell">
+              <span class="payments-table__customer-email">{{ payment.customerEmail }}</span>
+            </td>
+            <td class="payments-table__cell" [title]="payment.createdAt | relativeTime">
+              {{ payment.createdAt | date: 'MMM d, h:mm a' }}
+            </td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+
+  <div class="payments-table__footer">
+    <div class="payments-table__page-size">
+      <label for="payments-page-size">Rows per page</label>
+      <select id="payments-page-size" [value]="pageSize()" (change)="onPageSizeSelect($event)">
+        @for (size of pageSizeOptions; track size) {
+          <option [value]="size">{{ size }}</option>
+        }
+      </select>
+    </div>
+
+    <span class="payments-table__range">{{ rangeStart() }}–{{ rangeEnd() }} of {{ totalItems() }}</span>
+
+    <div class="payments-table__pager">
+      <button type="button" [disabled]="currentPage() <= 1" (click)="goToPreviousPage()">Previous</button>
+      <span class="payments-table__page-indicator">Page {{ currentPage() }} of {{ totalPages() }}</span>
+      <button type="button" [disabled]="currentPage() >= totalPages()" (click)="goToNextPage()">Next</button>
+    </div>
+  </div>
+</div>
