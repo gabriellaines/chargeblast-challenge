@@ -1,6 +1,10 @@
 # Chargeblast — Payments Dashboard
 
-Repositório: [ADICIONAR LINK] · Deploy: [ADICIONAR LINK]
+Deployed on [heroku](https://chargeblast-challenge-072e3879d7cc.herokuapp.com/payments)
+
+Whanna know more about me ? 
+- The Saas I am working on: [MyPets](https://meusbixinhos.com.br/)
+- [My online resume](https://gabriellaines.github.io/)
 
 Dashboard de pagamentos estilo Stripe, feito em Angular. Tabela paginável e ordenável, filtros (busca, status, forma de pagamento, período, valor) e dados mockados.
 
@@ -72,21 +76,15 @@ src/app/
 ```bash
 npm install
 
-npm run dev      # ng serve — http://localhost:4200 (development, with reload)
+npm start        # ng serve — http://localhost:4200
 
-npm run build    # production build into dist/chargeblast-fe-interview/browser
-
-npm start        # serves the production build on $PORT (used by the Heroku deploy)
+npm run build    # production build into dist/
 
 npm test         # unit tests (Vitest)
 
 npx playwright install chromium   # once, to download the E2E test browser
 npm run e2e      # end-to-end tests (Playwright), boots the app and runs headless Chromium
 ```
-
-### Deploy
-
-Deployed on Heroku via the Node buildpack, no Procfile — the `heroku-postbuild` hook runs `ng build` right after `npm install`, and the `start` script serves the static files in `dist/chargeblast-fe-interview/browser` with the `serve` package on `$PORT`, with SPA fallback (`serve.json`) for Angular Router routes.
 
 ### Structure
 
