@@ -43,7 +43,7 @@ export class PaymentStatusTabsComponent {
 
   protected toggle(status: PaymentStatus): void {
     const current = this.statuses();
-    const next = current.includes(status) ? current.filter((value) => value !== status) : [...current, status];
-    this.statusesChange.emit(next);
+    const isOnlyActive = current.length === 1 && current[0] === status;
+    this.statusesChange.emit(isOnlyActive ? [] : [status]);
   }
 }
