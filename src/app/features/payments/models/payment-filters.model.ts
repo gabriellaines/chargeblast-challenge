@@ -1,4 +1,4 @@
-import { CardBrand, PaymentStatus } from './payment.model';
+import { CardBrand, CurrencyCode, PaymentStatus } from './payment.model';
 
 export type DateRangePreset = 'today' | '7d' | '30d' | 'custom';
 
@@ -18,6 +18,7 @@ export interface PaymentFilters {
   readonly statuses: readonly PaymentStatus[];
   readonly paymentMethods: readonly CardBrand[];
   readonly amountRange: AmountRangeFilter;
+  readonly currency: CurrencyCode | null;
   readonly search: string;
 }
 
@@ -26,5 +27,6 @@ export const DEFAULT_PAYMENT_FILTERS: PaymentFilters = {
   statuses: [],
   paymentMethods: [],
   amountRange: { min: null, max: null },
+  currency: null,
   search: ''
 };

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 import { PaymentStatus } from '../../models/payment.model';
+import { PaymentsTotals } from '../../state/payments-store.service';
 
 interface StatusTabOption {
   readonly value: PaymentStatus;
@@ -23,12 +24,17 @@ const STATUS_TABS: readonly StatusTabOption[] = [
 })
 export class PaymentStatusTabsComponent {
   readonly statuses = input.required<readonly PaymentStatus[]>();
+  readonly counts = input.required<PaymentsTotals>();
   readonly statusesChange = output<readonly PaymentStatus[]>();
 
   protected readonly tabs = STATUS_TABS;
 
   protected isActive(status: PaymentStatus): boolean {
     return this.statuses().includes(status);
+  }
+
+  protected countFor(status: PaymentStatus): number {
+    return this.counts().byStatus[status];
   }
 
   protected selectAll(): void {

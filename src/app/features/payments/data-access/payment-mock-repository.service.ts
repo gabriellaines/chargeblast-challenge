@@ -56,6 +56,17 @@ const CURRENCIES: readonly WeightedOption<CurrencyCode>[] = [
 const ID_ALPHABET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 const DESCRIPTION = 'Subscription update';
 
+const DECLINE_REASONS: readonly string[] = [
+  'Insufficient funds',
+  'Do not honor',
+  'Transaction not allowed',
+  'Card declined',
+  'Expired card',
+  'Incorrect CVC'
+];
+
+const REFUND_LAG_MS_MAX = 14 * 24 * 60 * 60 * 1000;
+
 function createRng(seed: number): () => number {
   let state = seed;
   return () => {
@@ -123,19 +134,27 @@ function generatePayment(rng: () => number, now: number): Payment {
   const firstName = pick(rng, FIRST_NAMES);
   const lastName = pick(rng, LAST_NAMES);
   const currency = pickWeighted(rng, CURRENCIES);
+  const status = pickWeighted(rng, STATUSES);
+  const createdAt = randomCreatedAt(rng, now);
+
+  const refundedAt =
+    status === 'refunded' ? new Date(createdAt.getTime() + randomInt(rng, 1, REFUND_LAG_MS_MAX)) : null;
+  const declineReason = status === 'failed' || status === 'disputed' ? pick(rng, DECLINE_REASONS) : null;
 
   return {
     id: randomId(rng),
     customerEmail: `${firstName}.${lastName}@example.com`.toLowerCase(),
     amount: randomAmount(rng, currency),
     currency,
-    status: pickWeighted(rng, STATUSES),
+    status,
     paymentMethod: {
       brand: pickWeighted(rng, CARD_BRANDS),
       last4: randomLast4(rng)
     },
     description: DESCRIPTION,
-    createdAt: randomCreatedAt(rng, now)
+    createdAt,
+    refundedAt,
+    declineReason
   };
 }
 

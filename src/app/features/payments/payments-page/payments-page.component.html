@@ -1,7 +1,30 @@
 <section class="payments-page">
   <app-payments-toolbar [totalItems]="facade.totalItems()" />
 
-  <app-payments-filters [filters]="facade.filters()" (filtersChange)="facade.updateFilters($event)" />
+  @if (!bannerDismissed()) {
+    <div class="payments-page__banner">
+      <span class="payments-page__banner-badge">New</span>
+      <span class="payments-page__banner-text">
+        Rule Attributes are now in Sigma and Data Pipeline for better fraud insights.
+      </span>
+      <a class="payments-page__banner-link" href="javascript:void(0)">Get started</a>
+      <button
+        type="button"
+        class="payments-page__banner-dismiss"
+        aria-label="Dismiss announcement"
+        (click)="dismissBanner()"
+      >
+        ✕
+      </button>
+    </div>
+  }
+
+  <app-payments-filters
+    [filters]="facade.filters()"
+    [statusCounts]="facade.statusCounts()"
+    (filtersChange)="facade.updateFilters($event)"
+    (exportRequested)="exportCsv()"
+  />
 
   @if (facade.error(); as error) {
     <p class="payments-page__error">{{ error }}</p>

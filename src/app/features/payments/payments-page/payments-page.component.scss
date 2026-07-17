@@ -1,10 +1,8 @@
 .payments-page {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 1.5rem;
+  gap: 1.25rem;
+  padding: 1.25rem 1.25rem 3rem;
 }
 
 .payments-page__error {
@@ -12,4 +10,48 @@
   color: var(--color-failed-text);
   background: var(--color-failed-bg);
   border-radius: var(--radius-md);
+}
+
+.payments-page__banner {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  font-size: 0.8125rem;
+  color: var(--color-text);
+}
+
+.payments-page__banner-badge {
+  flex: none;
+  padding: 0.0625rem 0.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary-tint);
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.payments-page__banner-text {
+  flex: 1 1 auto;
+}
+
+.payments-page__banner-link {
+  flex: none;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.payments-page__banner-dismiss {
+  flex: none;
+  padding-left: 0.75rem;
+  margin-left: 0.25rem;
+  border-left: 1px solid var(--color-border);
+  color: var(--color-text-tertiary);
+
+  &:hover {
+    color: var(--color-text);
+  }
 }

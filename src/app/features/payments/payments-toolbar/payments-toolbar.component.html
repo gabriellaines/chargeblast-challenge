@@ -1,6 +1,26 @@
 <div class="payments-toolbar">
-  <div class="payments-toolbar__heading">
-    <h1 class="payments-toolbar__title">Payments</h1>
+  <div class="payments-toolbar__header">
+    <h1 class="payments-toolbar__title">Transactions</h1>
+
+    <div class="payments-toolbar__actions">
+      <button type="button" class="payments-toolbar__button payments-toolbar__button--primary">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>
+        Create payment
+      </button>
+      <button type="button" class="payments-toolbar__button payments-toolbar__button--secondary">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M2 14V9m4.5 5V6M11 14V3m3.5 11V7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        </svg>
+        Analyze
+      </button>
+    </div>
+  </div>
+
+  <div class="payments-toolbar__tabs">
+    <span class="payments-toolbar__tab payments-toolbar__tab--active">Payments</span>
+    <span class="payments-toolbar__tab">Payouts</span>
+    <span class="payments-toolbar__tab">All activity</span>
+
     <span class="payments-toolbar__count">{{ totalItems() }} payments</span>
   </div>
 </div>

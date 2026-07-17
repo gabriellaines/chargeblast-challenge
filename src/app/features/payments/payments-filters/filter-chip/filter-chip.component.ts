@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, inject, input, output, signal } from '@angular/core';
 
 @Component({
   selector: 'app-filter-chip',
@@ -11,13 +11,23 @@ export class FilterChipComponent {
 
   readonly label = input.required<string>();
   readonly hasMenu = input<boolean>(false);
+  readonly opened = output<void>();
 
   protected readonly open = signal(false);
 
   protected toggle(): void {
-    if (this.hasMenu()) {
-      this.open.update((value) => !value);
+    if (!this.hasMenu()) {
+      return;
     }
+    const next = !this.open();
+    this.open.set(next);
+    if (next) {
+      this.opened.emit();
+    }
+  }
+
+  close(): void {
+    this.open.set(false);
   }
 
   @HostListener('document:click', ['$event'])

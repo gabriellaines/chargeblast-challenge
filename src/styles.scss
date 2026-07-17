@@ -62,17 +62,22 @@ table {
 }
 
 :root {
-  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-family-base:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-size-base: 14px;
 
   --color-bg-canvas: #f6f8fa;
   --color-bg-surface: #ffffff;
-  --color-text: #1a1f36;
-  --color-text-secondary: #697386;
-  --color-border: #e3e8ee;
+  --color-text: #414552;
+  --color-text-secondary: #687385;
+  --color-text-tertiary: #87909f;
+  --color-icon: #545969;
+  --color-border: #ebeef1;
+  --color-border-strong: #d5dbe1;
 
   --color-primary: #635bff;
   --color-primary-hover: #524ae0;
+  --color-primary-tint: #f5f4ff;
 
   --color-success-bg: #e3f9e5;
   --color-success-text: #1a7f37;
@@ -98,6 +103,9 @@ table {
   --color-uncaptured-text: #4b5768;
   --color-uncaptured-border: #37414f;
 
+  --shell-sidebar-width: 180px;
+  --shell-topbar-height: 56px;
+
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 10px;
@@ -105,4 +113,36 @@ table {
 
   --shadow-sm: 0 1px 2px rgba(26, 31, 54, 0.06);
   --shadow-md: 0 2px 8px rgba(26, 31, 54, 0.08);
+}
+
+.icon-sm {
+  width: 0.9375rem;
+  height: 0.9375rem;
+  color: var(--color-icon);
+}
+
+.icon-search {
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  color: var(--color-icon);
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--radius-sm);
+  color: var(--color-icon);
+
+  &:hover {
+    background: var(--color-bg-canvas);
+    color: var(--color-text);
+  }
+}
+
+.icon-button--hover-border:hover {
+  background: var(--color-border);
 }

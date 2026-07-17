@@ -9,7 +9,9 @@ export class PaymentsFacade {
   private readonly store = inject(PaymentsStoreService);
 
   readonly payments = this.store.paginated;
+  readonly filteredPayments = this.store.sorted;
   readonly totals = this.store.totals;
+  readonly statusCounts = this.store.statusCounts;
   readonly totalItems = this.store.totalItems;
   readonly totalPages = this.store.totalPages;
   readonly currentPage = this.store.currentPage;

@@ -1,4 +1,14 @@
-export type ColumnKey = 'id' | 'customerEmail' | 'amount' | 'status' | 'paymentMethod' | 'description' | 'createdAt';
+export type ColumnKey =
+  | 'id'
+  | 'customerEmail'
+  | 'amount'
+  | 'currency'
+  | 'status'
+  | 'paymentMethod'
+  | 'description'
+  | 'createdAt'
+  | 'refundedAt'
+  | 'declineReason';
 
 export type SortableColumn = 'customerEmail' | 'amount' | 'status' | 'createdAt';
 
@@ -12,6 +22,7 @@ export interface SortState {
 export interface ColumnConfig {
   readonly key: ColumnKey;
   readonly label: string;
+  readonly srLabel?: string;
   readonly sortable: boolean;
   readonly align?: 'left' | 'right' | 'center';
 }

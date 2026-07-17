@@ -1,36 +1,51 @@
 <div class="payments-filters">
-  <input
-    type="search"
-    class="payments-filters__search"
-    placeholder="Search"
-    [value]="filters().search"
-    (input)="onSearchInput($event)"
-  />
+  <label class="payments-filters__search-wrap">
+    <svg class="icon-search" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.4" />
+      <path d="m13.5 13.5-2.8-2.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+    </svg>
+    <input
+      type="search"
+      class="payments-filters__search"
+      placeholder="Search"
+      [value]="filters().search"
+      (input)="onSearchInput($event)"
+    />
+  </label>
 
-  <app-payment-status-tabs [statuses]="filters().statuses" (statusesChange)="onStatusesChange($event)" />
+  <app-payment-status-tabs
+    [statuses]="filters().statuses"
+    [counts]="statusCounts()"
+    (statusesChange)="onStatusesChange($event)"
+  />
 
   <div class="payments-filters__row">
     <div class="payments-filters__chips">
-      <app-filter-chip label="Date and time" [hasMenu]="true">
-        <div class="payments-filters__menu-group">
-          <button
-            type="button"
-            class="payments-filters__preset-button"
-            [class.payments-filters__preset-button--active]="activePreset() === null"
-            (click)="onClearDateRange()"
-          >
-            All time
-          </button>
-          @for (preset of datePresets; track preset.value) {
+      <app-filter-chip label="Date and time" [hasMenu]="true" #dateChip>
+        <div class="payments-filters__menu-panel">
+          <div class="payments-filters__menu-title">Filter by: date and time</div>
+
+          <div class="payments-filters__preset-list">
             <button
               type="button"
               class="payments-filters__preset-button"
-              [class.payments-filters__preset-button--active]="activePreset() === preset.value"
-              (click)="onPresetSelect(preset.value)"
+              [class.payments-filters__preset-button--active]="activePreset() === null"
+              (click)="onClearDateRange(dateChip)"
             >
-              {{ preset.label }}
+              All time
             </button>
-          }
+            @for (preset of datePresets; track preset.value) {
+              <button
+                type="button"
+                class="payments-filters__preset-button"
+                [class.payments-filters__preset-button--active]="activePreset() === preset.value"
+                (click)="onPresetSelect(preset.value, dateChip)"
+              >
+                {{ preset.label }}
+              </button>
+            }
+          </div>
+
           @if (activePreset() === 'custom') {
             <div class="payments-filters__custom-dates">
               <input type="date" [value]="customStart()" (change)="onCustomDateChange('start', $event)" />
@@ -38,67 +53,163 @@
               <input type="date" [value]="customEnd()" (change)="onCustomDateChange('end', $event)" />
             </div>
           }
+
+          <div class="payments-filters__timezone">
+            <span class="payments-filters__timezone-label">Time zone:</span>
+            <label class="payments-filters__radio">
+              <input type="radio" name="date-timezone" [checked]="dateTimezone() === 'local'" (change)="setDateTimezone('local')" />
+              {{ localTimezoneLabel }}
+            </label>
+            <label class="payments-filters__radio">
+              <input type="radio" name="date-timezone" [checked]="dateTimezone() === 'utc'" (change)="setDateTimezone('utc')" />
+              UTC
+            </label>
+          </div>
         </div>
       </app-filter-chip>
 
-      <app-filter-chip label="Amount" [hasMenu]="true">
-        <div class="payments-filters__menu-group payments-filters__menu-group--amount">
-          <input
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder="Min"
-            class="payments-filters__amount-input"
-            [value]="minAmountInput()"
-            (input)="onAmountChange('min', $event)"
-          />
-          <span>–</span>
-          <input
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder="Max"
-            class="payments-filters__amount-input"
-            [value]="maxAmountInput()"
-            (input)="onAmountChange('max', $event)"
-          />
+      <app-filter-chip label="Amount" [hasMenu]="true" (opened)="resetAmountMenu()" #amountChip>
+        <div class="payments-filters__menu-panel">
+          <div class="payments-filters__menu-title">Filter by: amount</div>
+
+          <select class="payments-filters__select" [value]="amountOperator()" (change)="onAmountOperatorSelect($event)">
+            <option value="equal">is equal to</option>
+            <option value="between">is between</option>
+            <option value="greater">is greater than</option>
+            <option value="less">is less than</option>
+          </select>
+
+          <div class="payments-filters__menu-value-row">
+            <svg class="payments-filters__menu-arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 2v6a2 2 0 0 0 2 2h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M9 7l3 3-3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              class="payments-filters__value-input"
+              [value]="amountValue1()"
+              (input)="onAmountValueInput(1, $event)"
+            />
+            @if (amountOperator() === 'between') {
+              <span>and</span>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                class="payments-filters__value-input"
+                [value]="amountValue2()"
+                (input)="onAmountValueInput(2, $event)"
+              />
+            }
+          </div>
+
+          <button type="button" class="payments-filters__apply" (click)="applyAmountFilter(amountChip)">Apply</button>
         </div>
       </app-filter-chip>
 
-      <app-filter-chip label="Currency" />
+      <app-filter-chip label="Currency" [hasMenu]="true" (opened)="resetCurrencyMenu()" #currencyChip>
+        <div class="payments-filters__menu-panel">
+          <div class="payments-filters__menu-title">Filter by: currency</div>
 
-      <app-filter-chip label="Status" [hasMenu]="true">
-        <fieldset class="payments-filters__menu-group">
-          @for (status of statusOptions; track status) {
-            <label class="payments-filters__checkbox">
-              <input type="checkbox" [checked]="filters().statuses.includes(status)" (change)="onToggleStatus(status)" />
-              {{ statusLabels[status] }}
-            </label>
-          }
-        </fieldset>
+          <select class="payments-filters__select" [value]="pendingCurrency()" (change)="onCurrencySelect($event)">
+            <option value="">All currencies</option>
+            @for (currency of currencyOptions; track currency) {
+              <option [value]="currency">{{ currency }}</option>
+            }
+          </select>
+
+          <button type="button" class="payments-filters__apply" (click)="applyCurrencyFilter(currencyChip)">Apply</button>
+        </div>
       </app-filter-chip>
 
-      <app-filter-chip label="Payment method" [hasMenu]="true">
-        <fieldset class="payments-filters__menu-group">
-          @for (brand of brandOptions; track brand) {
-            <label class="payments-filters__checkbox">
-              <input type="checkbox" [checked]="filters().paymentMethods.includes(brand)" (change)="onToggleBrand(brand)" />
-              {{ brandLabels[brand] }}
-            </label>
-          }
-        </fieldset>
+      <app-filter-chip label="Status" [hasMenu]="true" (opened)="resetStatusMenu()" #statusChip>
+        <div class="payments-filters__menu-panel">
+          <div class="payments-filters__menu-title">Filter by: status</div>
+
+          <div class="payments-filters__checkbox-list">
+            @for (status of statusOptions; track status) {
+              <app-checkbox
+                class="payments-filters__checkbox"
+                [checked]="pendingStatuses().includes(status)"
+                (checkedChange)="toggleStatusPending(status)"
+                [ariaLabel]="statusLabels[status]"
+              >
+                {{ statusLabels[status] }}
+              </app-checkbox>
+            }
+          </div>
+
+          <button type="button" class="payments-filters__apply" (click)="applyStatusFilter(statusChip)">Apply</button>
+        </div>
       </app-filter-chip>
 
-      <app-filter-chip label="More filters" />
+      <app-filter-chip label="Payment method" [hasMenu]="true" (opened)="resetPaymentMethodMenu()" #paymentMethodChip>
+        <div class="payments-filters__menu-panel">
+          <div class="payments-filters__menu-title">Filter by: payment method</div>
+
+          <div class="payments-filters__checkbox-list">
+            @for (brand of brandOptions; track brand) {
+              <app-checkbox
+                class="payments-filters__checkbox"
+                [checked]="pendingPaymentMethods().includes(brand)"
+                (checkedChange)="togglePaymentMethodPending(brand)"
+                [ariaLabel]="brandLabels[brand]"
+              >
+                {{ brandLabels[brand] }}
+              </app-checkbox>
+            }
+          </div>
+
+          <button type="button" class="payments-filters__apply" (click)="applyPaymentMethodFilter(paymentMethodChip)">Apply</button>
+        </div>
+      </app-filter-chip>
+
+      <app-filter-chip label="More filters" [hasMenu]="true">
+        <div class="payments-filters__more-filters">
+          @for (option of moreFilterOptions; track option) {
+            <span class="payments-filters__more-filters-item">
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8.75 4.25a.75.75 0 0 0-1.5 0v3h-3a.75.75 0 0 0 0 1.5h3v3a.75.75 0 0 0 1.5 0v-3h3a.75.75 0 0 0 0-1.5h-3v-3Z" fill="currentColor" />
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 8a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-1.5 0A6.5 6.5 0 1 1 1.5 8a6.5 6.5 0 0 1 13 0Z" fill="currentColor" />
+              </svg>
+              {{ option }}
+            </span>
+          }
+        </div>
+      </app-filter-chip>
     </div>
 
     <div class="payments-filters__actions">
       <button type="button" class="payments-filters__action-button" (click)="exportRequested.emit()">
-        <span class="payments-filters__action-icon">↑</span>
+        <svg class="icon-sm" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path
+            d="M10.75 7.25a.75.75 0 0 1 .75.75v2.75a.75.75 0 0 1-.75.75h-9.5a.75.75 0 0 1-.75-.75V8A.75.75 0 0 1 2 8v2h8V8a.75.75 0 0 1 .75-.75Z"
+            fill="currentColor"
+          />
+          <path
+            d="M6.47.219a.752.752 0 0 1 1.061 0l3 3.007a.752.752 0 0 1 0 1.06l-3 2.995A.751.751 0 0 1 6.47 6.22l1.716-1.713H5.5a.75.75 0 0 0-.75.75V8a.75.75 0 0 1-1.5 0V5.256a2.25 2.25 0 0 1 2.25-2.25h2.691L6.47 1.28a.751.751 0 0 1 0-1.061Z"
+            fill="currentColor"
+          />
+        </svg>
         Export
       </button>
       <button type="button" class="payments-filters__action-button" (click)="editColumnsRequested.emit()">
-        <span class="payments-filters__action-icon">▤</span>
+        <svg class="icon-sm" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M11.368 4.49a.997.997 0 0 1 .632.93v1.16a1 1 0 0 1-.917.996l-.819.069a.126.126 0 0 0-.105.078.126.126 0 0 0 .02.13l.53.627a.999.999 0 0 1-.056 1.353l-.82.82a1 1 0 0 1-1.353.056l-.628-.53a.126.126 0 0 0-.13-.02.126.126 0 0 0-.077.105l-.069.819A1 1 0 0 1 6.58 12H5.42a1 1 0 0 1-.996-.917l-.069-.819a.126.126 0 0 0-.078-.105.126.126 0 0 0-.13.02l-.627.53a1.002 1.002 0 0 1-1.353-.056l-.82-.82a1 1 0 0 1-.056-1.354l.53-.627a.126.126 0 0 0 .02-.13.126.126 0 0 0-.105-.077l-.819-.069A1 1 0 0 1 0 6.58V5.42a1 1 0 0 1 .917-.996l.819-.069a.126.126 0 0 0 .105-.078.126.126 0 0 0-.02-.13l-.53-.627a1 1 0 0 1 .056-1.353l.82-.82a1 1 0 0 1 1.353-.056l.628.53a.123.123 0 0 0 .13.02.126.126 0 0 0 .077-.105l.069-.819A1 1 0 0 1 5.42 0h1.16a1 1 0 0 1 .996.917l.069.819a.126.126 0 0 0 .078.105.124.124 0 0 0 .13-.02l.627-.53a1 1 0 0 1 1.353.056l.82.82a1 1 0 0 1 .056 1.353l-.53.628a.126.126 0 0 0-.02.13.126.126 0 0 0 .105.077l.82.069a1 1 0 0 1 .284.066Zm-1.762-1.6-.382.451a1.376 1.376 0 0 0 .937 2.261l.589.05v.699l-.59.049a1.376 1.376 0 0 0-.936 2.26l.382.452-.495.495-.451-.382a1.376 1.376 0 0 0-2.261.936l-.05.59H5.65l-.049-.59a1.376 1.376 0 0 0-2.26-.936l-.452.382-.495-.495.382-.451A1.376 1.376 0 0 0 1.84 6.4l-.59-.05v-.7l.59-.049a1.376 1.376 0 0 0 .936-2.26l-.382-.452.495-.495.451.382a1.376 1.376 0 0 0 2.261-.936l.05-.59h.699l.049.59a1.376 1.376 0 0 0 2.26.936l.452-.382.495.495Z"
+            fill="currentColor"
+          />
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M6 7.25a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5ZM6 8.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"
+            fill="currentColor"
+          />
+        </svg>
         Edit columns
       </button>
     </div>

@@ -1,4 +1,31 @@
 <span class="badge" [class]="'badge--' + visual().modifier">
   {{ visual().label }}
-  <span class="badge__icon">{{ visual().icon }}</span>
+  <svg class="badge__icon" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+    @switch (visual().icon) {
+      @case ('check') {
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M11.701 1.203a.85.85 0 0 1 .096 1.198l-6.65 7.8a.85.85 0 0 1-1.26.038l-3.65-3.8A.85.85 0 0 1 1.463 5.26l3 3.123 6.04-7.085a.85.85 0 0 1 1.198-.096Z"
+          fill="currentColor"
+        />
+      }
+      @case ('cross') {
+        <path
+          d="M2.5 2.5l7 7m0-7-7 7"
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      }
+      @case ('bang') {
+        <path d="M6 2.5v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+        <circle cx="6" cy="9" r="0.9" fill="currentColor" />
+      }
+      @case ('dot') {
+        <circle cx="6" cy="6" r="2.25" fill="currentColor" />
+      }
+    }
+  </svg>
 </span>

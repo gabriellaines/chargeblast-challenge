@@ -60,6 +60,7 @@ function filterPayments(payments: readonly Payment[], filters: PaymentFilters): 
       (filters.statuses.length === 0 || filters.statuses.includes(payment.status)) &&
       (filters.paymentMethods.length === 0 || filters.paymentMethods.includes(payment.paymentMethod.brand)) &&
       matchesAmountRange(payment, filters) &&
+      (filters.currency === null || payment.currency === filters.currency) &&
       matchesSearch(payment, filters.search)
   );
 }
@@ -114,7 +115,17 @@ export class PaymentsStoreService {
   readonly sort = this._sort.asReadonly();
   readonly pagination = this._pagination.asReadonly();
 
-  readonly filtered = computed(() => filterPayments(this._allPayments(), this._filters()));
+  private readonly filteredExceptStatus = computed(() =>
+    filterPayments(this._allPayments(), { ...this._filters(), statuses: [] })
+  );
+
+  readonly filtered = computed(() => {
+    const statuses = this._filters().statuses;
+    return statuses.length === 0
+      ? this.filteredExceptStatus()
+      : this.filteredExceptStatus().filter((payment) => statuses.includes(payment.status));
+  });
+
   readonly sorted = computed(() => sortPayments(this.filtered(), this._sort()));
   readonly totalItems = computed(() => this.filtered().length);
   readonly totalPages = computed(() => Math.max(1, Math.ceil(this.totalItems() / this._pagination().pageSize)));
@@ -127,6 +138,8 @@ export class PaymentsStoreService {
   });
 
   readonly totals = computed(() => summarizeTotals(this.filtered()));
+
+  readonly statusCounts = computed(() => summarizeTotals(this.filteredExceptStatus()));
 
   constructor() {
     this.repository

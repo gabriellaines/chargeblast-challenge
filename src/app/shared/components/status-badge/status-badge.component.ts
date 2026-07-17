@@ -2,19 +2,21 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 
 export type StatusBadgeStatus = 'succeeded' | 'pending' | 'failed' | 'refunded' | 'disputed' | 'uncaptured';
 
+type StatusIcon = 'check' | 'cross' | 'dot' | 'bang';
+
 interface StatusVisual {
   readonly label: string;
   readonly modifier: string;
-  readonly icon: string;
+  readonly icon: StatusIcon;
 }
 
 const STATUS_VISUALS: Readonly<Record<StatusBadgeStatus, StatusVisual>> = {
-  succeeded: { label: 'Succeeded', modifier: 'success', icon: '✓' },
-  pending: { label: 'Pending', modifier: 'pending', icon: '•' },
-  failed: { label: 'Failed', modifier: 'failed', icon: '✗' },
-  refunded: { label: 'Refunded', modifier: 'refunded', icon: '•' },
-  disputed: { label: 'Disputed', modifier: 'disputed', icon: '!' },
-  uncaptured: { label: 'Uncaptured', modifier: 'uncaptured', icon: '•' }
+  succeeded: { label: 'Succeeded', modifier: 'success', icon: 'check' },
+  pending: { label: 'Pending', modifier: 'pending', icon: 'dot' },
+  failed: { label: 'Failed', modifier: 'failed', icon: 'cross' },
+  refunded: { label: 'Refunded', modifier: 'refunded', icon: 'dot' },
+  disputed: { label: 'Disputed', modifier: 'disputed', icon: 'bang' },
+  uncaptured: { label: 'Uncaptured', modifier: 'uncaptured', icon: 'dot' }
 };
 
 @Component({

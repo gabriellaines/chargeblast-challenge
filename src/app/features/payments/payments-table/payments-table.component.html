@@ -3,13 +3,14 @@
     <thead>
       <tr>
         <th class="payments-table__header payments-table__header--checkbox">
-          <input type="checkbox" [checked]="allSelected()" (change)="toggleAll()" aria-label="Select all rows" />
+          <app-checkbox [checked]="allSelected()" (checkedChange)="toggleAll()" ariaLabel="Select all rows" />
         </th>
         @for (column of columns; track column.key) {
           <th
             class="payments-table__header"
             [class.payments-table__header--sortable]="column.sortable"
             [class.payments-table__header--right]="column.align === 'right'"
+            [attr.aria-label]="column.label ? null : column.srLabel"
             (click)="onSort(column)"
           >
             {{ column.label }}
@@ -18,16 +19,17 @@
             }
           </th>
         }
+        <th class="payments-table__header payments-table__header--actions"></th>
       </tr>
     </thead>
     <tbody>
       @if (loading()) {
         <tr class="payments-table__state-row">
-          <td [attr.colspan]="columns.length + 1">Loading payments…</td>
+          <td [attr.colspan]="columns.length + 2">Loading payments…</td>
         </tr>
       } @else if (payments().length === 0) {
         <tr class="payments-table__state-row">
-          <td [attr.colspan]="columns.length + 1">No payments match the current filters.</td>
+          <td [attr.colspan]="columns.length + 2">No payments match the current filters.</td>
         </tr>
       } @else {
         @for (payment of payments(); track payment.id) {
@@ -44,11 +46,10 @@
             [attr.data-created-at]="payment.createdAt.toISOString()"
           >
             <td class="payments-table__cell payments-table__cell--checkbox">
-              <input
-                type="checkbox"
+              <app-checkbox
                 [checked]="isSelected(payment.id)"
-                (change)="toggleRow(payment.id)"
-                [attr.aria-label]="'Select payment ' + payment.id"
+                (checkedChange)="toggleRow(payment.id)"
+                [ariaLabel]="'Select payment ' + payment.id"
               />
             </td>
             <td class="payments-table__cell">
@@ -59,7 +60,9 @@
             </td>
             <td class="payments-table__cell">
               {{ payment.amount | paymentAmount: payment.currency }}
-              <span class="payments-table__amount-currency">{{ payment.currency }}</span>
+            </td>
+            <td class="payments-table__cell payments-table__cell--currency">
+              {{ payment.currency }}
             </td>
             <td class="payments-table__cell">
               <app-status-badge [status]="payment.status" />
@@ -76,6 +79,64 @@
             <td class="payments-table__cell" [title]="payment.createdAt | relativeTime">
               {{ payment.createdAt | date: 'MMM d, h:mm a' }}
             </td>
+            <td class="payments-table__cell payments-table__cell--muted">
+              @if (payment.refundedAt) {
+                {{ payment.refundedAt | date: 'MMM d, h:mm a' }}
+              } @else {
+                —
+              }
+            </td>
+            <td class="payments-table__cell payments-table__cell--muted payments-table__cell--truncate">
+              {{ payment.declineReason ?? '—' }}
+            </td>
+            <td class="payments-table__cell payments-table__cell--actions">
+              <div class="payments-table__actions">
+                <div class="payments-table__quick-actions">
+                  <button type="button" class="payments-table__quick-action icon-button icon-button--hover-border" aria-label="Refund payment">
+                    <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                      <path
+                        d="M3.5.79a.75.75 0 1 1 1.06 1.06l-1.9 1.9h5.31c2.06.002 3.93 1.57 3.93 3.75 0 2.124-1.81 3.938-3.93 3.938a.75.75 0 0 1 0-1.5c1.3 0 2.44-1.142 2.44-2.438 0-1.16-.95-2.122-2.19-2.238l-.25-.012h-5.32l1.91 1.906a.75.75 0 1 1-1.06 1.062L.31 5.04a.75.75 0 0 1 0-1.06L3.5.79Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </button>
+                  <button type="button" class="payments-table__quick-action icon-button icon-button--hover-border" aria-label="Send receipt">
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path
+                        d="M8.75 10.76a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1-.75-.75Z"
+                        fill="currentColor"
+                      />
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M3 1.51a3 3 0 0 0-3 3v7a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-7a3 3 0 0 0-3-3H3Zm10 1.5H3a1.5 1.5 0 0 0-1.31.76l6.19 3.33a.25.25 0 0 0 .24 0L14.31 3.78A1.5 1.5 0 0 0 13 3.01Zm1.5 2.34-5.67 3.05a1.75 1.75 0 0 1-1.66 0L1.5 5.35v6.16a1.5 1.5 0 0 0 1.5 1.5h10a1.5 1.5 0 0 0 1.5-1.5V5.85Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  class="payments-table__actions-trigger icon-button"
+                  aria-label="Row actions"
+                  (click)="toggleActions(payment.id, $event)"
+                >
+                  <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path
+                      d="M6 7.25a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5Zm4.5 0a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5Zm-9 0a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </button>
+                @if (openActionsId() === payment.id) {
+                  <div class="payments-table__actions-menu">
+                    <button type="button">View details</button>
+                    <button type="button">Refund</button>
+                    <button type="button">Copy payment ID</button>
+                  </div>
+                }
+              </div>
+            </td>
           </tr>
         }
       }
@@ -83,21 +144,22 @@
   </table>
 
   <div class="payments-table__footer">
-    <div class="payments-table__page-size">
-      <label for="payments-page-size">Rows per page</label>
-      <select id="payments-page-size" [value]="pageSize()" (change)="onPageSizeSelect($event)">
-        @for (size of pageSizeOptions; track size) {
-          <option [value]="size">{{ size }}</option>
-        }
-      </select>
-    </div>
+    <span class="payments-table__range">Viewing {{ rangeStart() }}–{{ rangeEnd() }} of {{ totalItems() }} results</span>
 
-    <span class="payments-table__range">{{ rangeStart() }}–{{ rangeEnd() }} of {{ totalItems() }}</span>
+    <div class="payments-table__footer-right">
+      <div class="payments-table__page-size">
+        <label for="payments-page-size">Rows per page</label>
+        <select id="payments-page-size" [value]="pageSize()" (change)="onPageSizeSelect($event)">
+          @for (size of pageSizeOptions; track size) {
+            <option [value]="size">{{ size }}</option>
+          }
+        </select>
+      </div>
 
-    <div class="payments-table__pager">
-      <button type="button" [disabled]="currentPage() <= 1" (click)="goToPreviousPage()">Previous</button>
-      <span class="payments-table__page-indicator">Page {{ currentPage() }} of {{ totalPages() }}</span>
-      <button type="button" [disabled]="currentPage() >= totalPages()" (click)="goToNextPage()">Next</button>
+      <div class="payments-table__pager">
+        <button type="button" [disabled]="currentPage() <= 1" (click)="goToPreviousPage()">Previous</button>
+        <button type="button" [disabled]="currentPage() >= totalPages()" (click)="goToNextPage()">Next</button>
+      </div>
     </div>
   </div>
 </div>

@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, HostListener, input, output, signal } from '@angular/core';
 
+import { CheckboxComponent } from '../../../shared/components/checkbox/checkbox.component';
 import { PaymentMethodBadgeComponent } from '../../../shared/components/payment-method-badge/payment-method-badge.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { RelativeTimePipe } from '../../../shared/pipes/relative-time.pipe';
@@ -11,11 +12,14 @@ import { PaymentAmountPipe } from './payment-amount.pipe';
 const COLUMNS: readonly ColumnConfig[] = [
   { key: 'id', label: 'Payment ID', sortable: false },
   { key: 'amount', label: 'Amount', sortable: true },
-  { key: 'status', label: 'Status', sortable: true },
-  { key: 'paymentMethod', label: 'Payment Method', sortable: false },
+  { key: 'currency', label: '', srLabel: 'Currency', sortable: false },
+  { key: 'status', label: '', srLabel: 'Status', sortable: true },
+  { key: 'paymentMethod', label: 'Payment method', sortable: false },
   { key: 'description', label: 'Description', sortable: false },
   { key: 'customerEmail', label: 'Customer', sortable: true },
-  { key: 'createdAt', label: 'Date', sortable: true }
+  { key: 'createdAt', label: 'Date', sortable: true },
+  { key: 'refundedAt', label: 'Refunded date', sortable: false },
+  { key: 'declineReason', label: 'Decline reason', sortable: false }
 ];
 
 const COPY_FEEDBACK_MS = 1500;
@@ -25,7 +29,7 @@ const ID_TRUNCATE_TAIL = 4;
 @Component({
   selector: 'app-payments-table',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, RelativeTimePipe, PaymentAmountPipe, StatusBadgeComponent, PaymentMethodBadgeComponent],
+  imports: [DatePipe, RelativeTimePipe, PaymentAmountPipe, StatusBadgeComponent, PaymentMethodBadgeComponent, CheckboxComponent],
   templateUrl: './payments-table.component.html',
   styleUrl: './payments-table.component.scss'
 })
@@ -45,6 +49,7 @@ export class PaymentsTableComponent {
   protected readonly columns = COLUMNS;
   protected readonly pageSizeOptions = PAGE_SIZE_OPTIONS;
   protected readonly copiedId = signal<string | null>(null);
+  protected readonly openActionsId = signal<string | null>(null);
 
   protected readonly selectedIds = signal<ReadonlySet<string>>(new Set());
 
@@ -127,5 +132,15 @@ export class PaymentsTableComponent {
         this.copiedId.set(null);
       }
     }, COPY_FEEDBACK_MS);
+  }
+
+  protected toggleActions(id: string, event: Event): void {
+    event.stopPropagation();
+    this.openActionsId.update((current) => (current === id ? null : id));
+  }
+
+  @HostListener('document:click')
+  protected closeActions(): void {
+    this.openActionsId.set(null);
   }
 }
